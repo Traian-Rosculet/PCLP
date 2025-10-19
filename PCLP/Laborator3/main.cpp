@@ -340,7 +340,7 @@ F problema2[] = { // vector de functii pentru evitarea repetitiei la apelare
     [](auto sub){
         REZULTAT(
                     sub,
-                    "int x=3; double y=25.2, z; x=y; cout<<x<<'\n';",
+                    "int x=3; double y=25.2, z; x=y; cout<<x<<'\\n';",
                     "Se compileaza si se executa fara erori. (int) x devine jumatatea intreaga a lui (double) y. Romantic.",
                     int x=3; double y=25.2; double z; x=y; cout<<x<<'\n';
                     );
@@ -354,6 +354,7 @@ int main()
     iterare_subpuncte(2, problema2);
     return 0;
 }
+
 
 
 
