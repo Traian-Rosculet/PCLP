@@ -24,8 +24,9 @@ template <size_t N> void iterare_subpuncte(int nr_problema, const F (&problema)[
     char sub = 'a';
     for (size_t i = 0; i < N; ++i) {
         problema[i](sub++);
-        std::cout << "\n" << std::string(120, '_') << "\n\n";
+        cout << "\n" << string(sep_size, sep_symbol) << ((i!=sizeof(problema))?"":"/n/n");
     }
+     cout<< string(sep_size, sep_symbol);
 };
 
 
@@ -215,11 +216,140 @@ F problema2[] = { // vector de functii pentru evitarea repetitiei la apelare
                     //int x=3/5; int y=x++; char x='J'; cout<<"y="<<y<<'\n';
                     );
     },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "char a='X';const int b=89; b+=8; cout<<\"b=\"<<b<<\" a=\"<<a<<'\\n';; --> eroare",
+                    "variabila de tip (const int) b nu poate fi modificata dupa initializare",
+                    // char a='X';const int b=89; b+=8; cout<<"b="<<b<<" a="<<a<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "const x=34; int g=56; x+=h; cout<<\"g=\"<<g<<\"x=\"<<x<<'\\n';; --> eroare",
+                    "simbolul (const) nu este suficient pentru declararea unei variabile. El trebuie folosit impreuna cu un simbol care sa indice tipul variabilei.",
+                    //const x=34; int g=56; x+=h; cout<<"g="<<g<<"x="<<x<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "double y=9.8; int a=(y<<7); cout<<\"a=\"<<a<<\"y=\"<<y<<'\\n'; --> eroare",
+                    "(y<<7) -> nu se poate face bitshift pe o variabila cu virgula flotanta.",
+                    //double y=9.8; int a=(y<<7); cout<<"a="<<a<<"y="<<y<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "cout<<(5++-3)--<<'\\n';; --> eroare",
+                    "incrementare pe rvalue",
+                    //cout<<(5++-3)--<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "int a=9; cout<<(a!=9)<<'\\n'; cout<<(++a!=9); cout<< (a++!=9);",
+                    "Se compileaza si se executa fara erori. La primul cout a=10, pre-incrementat, deci expresia este adevarata. La al doilea cout a=10, expresia este evaluata ca fiind adevarata, apoi a este post-incrementat.",
+                    int a=9; cout<<(a!=9)<<'\n'; cout<<(++a!=9); cout<< (a++!=9);
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "int a=9; cout<<(a!=9) <<'\\n'; cout<< (a++!=9); cout<< (++a!=9);",
+                    "Se compileaza si se executa fara erori. La primul cout a=9, post-incrementat, deci expresia este falsa. La al doilea cout a=11, expresia este evaluata ca fiind adevarata.",
+                    int a=9; cout<<(a!=9) <<'\n'; cout<< (a++!=9); cout<< (++a!=9);
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "int a=9; cout<<(a++-2*5);",
+                    "Se compileaza si se executa fara erori. (a=9)-2*5=-1, apoi a este incrementat",
+                    int a=9; cout<<(a++-2*5);
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "cout<<(sizeof('A') <=1) <<'\\n';",
+                    "Se compileaza si se executa fara erori. Valorile de tip char sunt stocate pe 1 octet. Functia sizeof() returneaza dimensiunea unei variabile in octeti, deci expresia este adevarata",
+                    cout<<(sizeof('A') <=1) <<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "cout<<(int)'A';",
+                    "Se compileaza si se executa fara erori. Afiseaza valoarea caracterului A in tabelul ASCII.",
+                    cout<<(int)'A';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "double x; int y=8.5; x=y%3; cout<<\"x=\"<<x<<\" y=\"<<y<<'\\n';",
+                    "Se compileaza si se executa fara erori. y este declarat ca int, deci se pastreaza doar partea intreaga a valorii.",
+                    double x; int y=8.5; x=y%3; cout<<"x="<<x<<" y="<<y<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "double x; int y=8; x=y%3; cout<<\"x=\"<<x<<\" y=\"<<y<<'\\n';",
+                    "Se compileaza si se executa fara erori.",
+                    double x; int y=8; x=y/3; cout<<"x="<<x<<" y="<<y<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "double w=2.5; cout<<(!w); cout<< ((!w)++); cout<<(!w+2) ++;",
+                    "incrementare pe rvalue",
+                    //double w=2.5; cout<<(!w); cout<< ((!w)++); cout<<(!w+2) ++;
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "cout<<sizeof (\"ab9*\")<<'\\t'<<sizeof(\"a\\nb\";",
+                    "Se compileaza si se executa fara erori.",
+                    cout<<sizeof ("ab9*")<<'\t'<<sizeof("a\nb");
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "double x=3; double y=(x<7)?1:0; cout<<y<<\"\\n\";",
+                    "Se compileaza si se executa fara erori.",
+                    double x=3; double y=(x<7)?1:0; cout<<y<<"\n";
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "int m=2, n=5, p=10; p=(m=n, n<20); cout<<\"p=\"<<p<<'\\n';",
+                    "In atribuirea unei variabile o evaluare a unei insiruiri de expresii separate cu virgula, se atribuie valoarea ultimei expresii.",
+                    int m=2; int n=5; int p=10; p=(m=n, n<20); cout<<"p="<<p<<'\n';
+                    );
+    },
+    [](auto sub){ // Functie de tip lambda, pentru izolarea scope-ului intre subpuncte
+        REZULTAT(
+                    sub,
+                    "int x=3; double y=25.2, z; x=y; cout<<x<<'\n';",
+                    "Se compileaza si se executa fara erori. (int) x devine jumatatea intreaga a lui (double) y. Romantic.",
+                    int x=3; double y=25.2; double z; x=y; cout<<x<<'\n';
+                    );
+    },
 };
 
 int main()
 {
     iterare_subpuncte(1, problema1);
+    cout << "\n\n";
     iterare_subpuncte(2, problema2);
     return 0;
 }
