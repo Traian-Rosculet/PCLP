@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1760881770 source:h:\pclp\laborator3\main.cpp
+	<iostream>
+	<string>
+	<bits/stdc++.h>
+

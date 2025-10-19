@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1760351824 source:h:\pclp\laborator2\laborator2\main.cpp
+	<iostream>
+	<string>
+	<vector>
+	<cmath>
+	<iomanip>
+	<cstring>
+
