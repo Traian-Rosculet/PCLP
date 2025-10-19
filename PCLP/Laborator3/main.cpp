@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-//#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -355,5 +354,6 @@ int main()
     iterare_subpuncte(2, problema2);
     return 0;
 }
+
 
 
